@@ -1,9 +1,17 @@
-// Components/ProfileDropdown.jsx
+// components/common/ProfileDropdown.jsx
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiUser, FiHeart, FiSettings, FiLogOut } from 'react-icons/fi';
 
 const ProfileDropdown = ({ handleLogout, setCurrentPage, onClose }) => {
+    const navigate = useNavigate();
+    
+    const pageToRoute = {
+        'Profile': '/profile',
+        'Favorites': '/favorites',
+        'Settings': '/settings',
+    };
     
     // Define the menu items
     const dropdownItems = [
@@ -18,7 +26,10 @@ const ProfileDropdown = ({ handleLogout, setCurrentPage, onClose }) => {
         if (item.action) {
             item.action();
         } else if (item.page) {
-            setCurrentPage(item.page);
+            const route = pageToRoute[item.page];
+            if (route) {
+                navigate(route);
+            }
         }
         onClose();
     };
@@ -34,7 +45,7 @@ const ProfileDropdown = ({ handleLogout, setCurrentPage, onClose }) => {
                     key={index}
                     onClick={() => handleClick(item)}
                     className={`w-full text-left flex items-center px-3 md:px-4 py-2 text-xs md:text-sm transition hover:bg-gray-600
-                        ${item.isDestructive ? 'text-red-400 hover:text-red-300' : 'text-gray-200'}
+                        ${item.isDestructive ? 'text-amber-500 hover:text-amber-400' : 'text-gray-200'}
                     `}
                 >
                     <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4 mr-2 md:mr-3" />

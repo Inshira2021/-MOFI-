@@ -1,4 +1,4 @@
-// Components/ProfilePage.jsx
+// components/pages/ProfilePage.jsx
 
 import React from 'react';
 import { 
@@ -8,14 +8,12 @@ import {
     FiFilm, 
     FiCalendar, 
     FiEdit3,
-    // 🚨 MISSING ICONS ADDED HERE 🚨
     FiClock, 
     FiStar, 
     FiActivity, 
     FiMessageSquare, 
     FiList, 
     FiZap 
-    // 🚨 END OF MISSING ICONS 🚨
 } from 'react-icons/fi';
 
 // For a real application, this data would come from the user context/API call
@@ -29,7 +27,7 @@ const DUMMY_USER_DATA = {
     favoriteGenre: "Sci-Fi, Action, Thriller",
     totalReviews: 45,
     watchedHours: 1200,
-    preReleaseScoreGiven: 8.5, // New unique metric
+    preReleaseScoreGiven: 8.5,
 };
 
 // Dummy data for user activity feed
@@ -45,7 +43,7 @@ const ProfilePage = () => {
     return (
         <div className="flex-grow overflow-y-auto pr-0 lg:pr-4 px-4 lg:px-0">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 md:mb-10 mt-4 text-white">
-                Welcome, <span className="text-red-600">{user.fullName.split(' ')[0]}</span>
+                Welcome, <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">{user.fullName.split(' ')[0]}</span>
             </h2>
             
             <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
@@ -54,32 +52,32 @@ const ProfilePage = () => {
                 <div className="lg:w-1/3 space-y-6 md:space-y-8">
                     
                     {/* Profile Card */}
-                    <div className="bg-gray-800 rounded-xl shadow-2xl p-4 md:p-6 relative ring-2 ring-red-600/20">
+                    <div className="bg-gray-800 rounded-xl shadow-2xl p-4 md:p-6 relative ring-2 ring-amber-600/20">
                         
                         {/* Edit Button */}
-                        <button className="absolute top-3 right-3 md:top-4 md:right-4 text-gray-400 hover:text-red-500 transition">
+                        <button className="absolute top-3 right-3 md:top-4 md:right-4 text-gray-400 hover:text-amber-500 transition">
                             <FiEdit3 className="w-4 h-4 md:w-5 md:h-5" />
                         </button>
 
                         <div className="flex flex-col items-center text-center">
-                            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gray-700 flex items-center justify-center text-3xl md:text-4xl font-bold border-4 border-red-600 mb-3 md:mb-4">
+                            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center text-3xl md:text-4xl font-bold border-4 border-amber-600 mb-3 md:mb-4 shadow-lg shadow-amber-900/50">
                                 {user.fullName.charAt(0)}
                             </div>
                             <h3 className="text-xl md:text-2xl font-bold text-white">{user.fullName}</h3>
-                            <p className="text-red-400 text-sm md:text-md font-medium">@{user.username}</p>
+                            <p className="text-amber-400 text-sm md:text-md font-medium">@{user.username}</p>
                         </div>
                         
                         <div className="mt-4 md:mt-6 pt-4 border-t border-gray-700 space-y-2 text-xs md:text-sm">
                             <div className="flex items-center space-x-2 text-gray-400">
-                                <FiMapPin className="w-4 h-4 text-red-600" />
+                                <FiMapPin className="w-4 h-4 text-amber-600" />
                                 <span>{user.location}</span>
                             </div>
                             <div className="flex items-center space-x-2 text-gray-400">
-                                <FiMail className="w-4 h-4 text-red-600" />
+                                <FiMail className="w-4 h-4 text-amber-600" />
                                 <span>{user.email}</span>
                             </div>
                             <div className="flex items-center space-x-2 text-gray-400">
-                                <FiCalendar className="w-4 h-4 text-red-600" />
+                                <FiCalendar className="w-4 h-4 text-amber-600" />
                                 <span>Joined: {user.memberSince}</span>
                             </div>
                         </div>
@@ -106,7 +104,7 @@ const ProfilePage = () => {
                     {/* Activity Feed */}
                     <div className="bg-gray-800 rounded-xl shadow-xl p-4 md:p-6">
                         <h4 className="text-lg md:text-xl font-bold mb-4 md:mb-5 text-white flex items-center">
-                            <FiActivity className="w-4 h-4 md:w-5 md:h-5 mr-2 text-red-600" /> Recent MOFI Activity
+                            <FiActivity className="w-4 h-4 md:w-5 md:h-5 mr-2 text-amber-600" /> Recent MOFI Activity
                         </h4>
                         
                         <div className="space-y-3 md:space-y-4">
@@ -123,8 +121,8 @@ const ProfilePage = () => {
 };
 
 // Helper Components
-const MetricCard = ({ icon: Icon, label, value, unit, isText, color = 'text-red-400' }) => (
-    <div className="bg-gray-900 p-3 md:p-4 rounded-xl text-center border border-gray-700 hover:border-red-600 transition duration-300">
+const MetricCard = ({ icon: Icon, label, value, unit, isText, color = 'text-amber-500' }) => (
+    <div className="bg-gray-900 p-3 md:p-4 rounded-xl text-center border border-gray-700 hover:border-amber-500 hover:shadow-lg hover:shadow-amber-900/20 transition-all duration-300">
         <Icon className={`w-5 h-5 md:w-6 md:h-6 mx-auto mb-2 ${color}`} />
         <p className="text-gray-400 text-xs uppercase font-medium truncate">{label}</p>
         {isText ? (
@@ -139,7 +137,7 @@ const MetricCard = ({ icon: Icon, label, value, unit, isText, color = 'text-red-
 
 const ActivityItem = ({ type, movie, rating, time }) => {
     let typeColor = 'text-green-400';
-    let typeIcon = <FiStar className="w-5 h-5" />; // Default icon
+    let typeIcon = <FiStar className="w-5 h-5" />;
 
     if (type === 'Review') {
         typeColor = 'text-yellow-400';
@@ -148,7 +146,7 @@ const ActivityItem = ({ type, movie, rating, time }) => {
         typeColor = 'text-blue-400';
         typeIcon = <FiList className="w-5 h-5" />;
     } else if (type === 'Pre-Review') {
-        typeColor = 'text-red-400';
+        typeColor = 'text-amber-400';
         typeIcon = <FiZap className="w-5 h-5" />;
     }
 
@@ -178,7 +176,5 @@ const ActivityItem = ({ type, movie, rating, time }) => {
         </div>
     );
 };
-
-// Removed redundant re-exports
 
 export default ProfilePage;

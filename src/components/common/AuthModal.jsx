@@ -1,4 +1,4 @@
-// Components/AuthModal.jsx
+// components/common/AuthModal.jsx
 
 import React, { useState } from 'react';
 import { FiX, FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
@@ -31,13 +31,13 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
             onClick={onClose} 
         >
             <div 
-                className="bg-gray-800 rounded-xl shadow-2xl p-6 md:p-8 w-full max-w-sm md:max-w-md transform scale-100 ring-4 ring-red-600/10 transition-transform"
+                className="bg-gray-800 rounded-xl shadow-2xl p-6 md:p-8 w-full max-w-sm md:max-w-md transform scale-100 ring-4 ring-amber-600/10 transition-transform"
                 onClick={e => e.stopPropagation()} 
             >
                 <div className="flex justify-end">
                     <button 
                         onClick={onClose} 
-                        className="text-gray-400 hover:text-red-500 transition"
+                        className="text-gray-400 hover:text-amber-500 transition"
                         title="Close"
                     >
                         <FiX className="w-5 h-5 md:w-6 md:h-6" />
@@ -51,7 +51,7 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
                     <button
                         onClick={() => setIsSignIn(true)}
                         className={`flex-1 py-2 rounded-full font-semibold transition duration-200 text-sm md:text-base ${
-                            isSignIn ? 'bg-red-600 text-white shadow-lg' : 'text-gray-300 hover:text-white'
+                            isSignIn ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg shadow-amber-900/50' : 'text-gray-300 hover:text-white'
                         }`}
                     >
                         Sign In
@@ -59,7 +59,7 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
                     <button
                         onClick={() => setIsSignIn(false)}
                         className={`flex-1 py-2 rounded-full font-semibold transition duration-200 text-sm md:text-base ${
-                            !isSignIn ? 'bg-red-600 text-white shadow-lg' : 'text-gray-300 hover:text-white'
+                            !isSignIn ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg shadow-amber-900/50' : 'text-gray-300 hover:text-white'
                         }`}
                     >
                         Sign Up
@@ -76,7 +76,7 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            className="w-full bg-gray-700 text-white py-2.5 md:py-3 pl-10 pr-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 transition text-sm md:text-base"
+                            className="w-full bg-gray-700 text-white py-2.5 md:py-3 pl-10 pr-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 transition text-sm md:text-base"
                         />
                     </div>
 
@@ -89,7 +89,7 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            className="w-full bg-gray-700 text-white py-2.5 md:py-3 pl-10 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 transition text-sm md:text-base"
+                            className="w-full bg-gray-700 text-white py-2.5 md:py-3 pl-10 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600 transition text-sm md:text-base"
                         />
                         <button 
                             type="button" 
@@ -102,14 +102,14 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
 
                     {isSignIn && (
                         <div className="text-right">
-                            <a href="#" className="text-sm text-red-400 hover:text-red-300 transition">Forgot Password?</a>
+                            <a href="#" className="text-sm text-amber-400 hover:text-amber-300 transition">Forgot Password?</a>
                         </div>
                     )}
 
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 md:py-3 rounded-lg shadow-lg shadow-red-600/50 transition duration-200 text-sm md:text-base"
+                        className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold py-2.5 md:py-3 rounded-lg shadow-lg shadow-amber-900/50 transition duration-200 text-sm md:text-base"
                     >
                         {submitButtonText}
                     </button>
