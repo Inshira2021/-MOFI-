@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import Dashboard, { OtherPageContent, allMoviesData } from './components/pages/Dashboard';
+import Dashboard, { OtherPageContent, allMoviesData, allTVSeriesData, allAnimeData } from './components/pages/Dashboard';
 import Sidebar from './components/layout/Sidebar';
 import AuthModal from './components/common/AuthModal';
 import ProfileDropdown from './components/common/ProfileDropdown';
 import ProfilePage from './components/pages/ProfilePage';
+import SettingsPage from './components/pages/SettingsPage';
 import MovieDetail from './components/pages/MovieDetail';
 import Footer from './components/layout/Footer';
 
@@ -29,12 +30,10 @@ function App() {
         '/tv-series': 'TV Series',
         '/movies': 'Movies',
         '/animes': 'Animes',
-        '/community': 'Community',
-        '/discovery': 'Discovery',
-        '/coming-soon': 'Coming soon',
-        '/friends': 'Friends',
-        '/parties': 'Parties',
-        '/media': 'Media',
+        '/trends': 'Trends',
+        '/coming-soon': 'Coming Soon',
+        '/rated-movies': 'Rated Movies',
+        '/fan-favourite': 'Fan Favourite',
         '/settings': 'Settings',
         '/profile': 'Profile',
         '/login': 'Login',
@@ -100,15 +99,15 @@ function App() {
                     } />
                     <Route path="/tv-series" element={<OtherPageContent title="TV Series" />} />
                     <Route path="/movies" element={<OtherPageContent title="Movies" />} />
-                    <Route path="/movie/:id" element={<MovieDetail allMovies={allMoviesData} />} />
+                    <Route path="/movie/:id" element={<MovieDetail allContent={allMoviesData} contentType="Movie" />} />
+                    <Route path="/tv-series/:id" element={<MovieDetail allContent={allTVSeriesData} contentType="TV Series" />} />
+                    <Route path="/anime/:id" element={<MovieDetail allContent={allAnimeData} contentType="Anime" />} />
                     <Route path="/animes" element={<OtherPageContent title="Animes" />} />
-                    <Route path="/community" element={<OtherPageContent title="Community" />} />
-                    <Route path="/discovery" element={<OtherPageContent title="Discovery" />} />
-                    <Route path="/coming-soon" element={<OtherPageContent title="Coming soon" />} />
-                    <Route path="/friends" element={<OtherPageContent title="Friends" />} />
-                    <Route path="/parties" element={<OtherPageContent title="Parties" />} />
-                    <Route path="/media" element={<OtherPageContent title="Media" />} />
-                    <Route path="/settings" element={<OtherPageContent title="Settings" />} />
+                    <Route path="/trends" element={<OtherPageContent title="Trends" />} />
+                    <Route path="/coming-soon" element={<OtherPageContent title="Coming Soon" />} />
+                    <Route path="/rated-movies" element={<OtherPageContent title="Rated Movies" />} />
+                    <Route path="/fan-favourite" element={<OtherPageContent title="Fan Favourite" />} />
+                    <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/login" element={
                         <AuthModal

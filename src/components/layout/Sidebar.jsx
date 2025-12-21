@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-    FiHome, FiUsers, FiSearch, FiClock, FiUser,
-    FiGift, FiMusic, FiSettings, FiMenu, FiBell
+    FiHome, FiTrendingUp, FiClock, FiStar,
+    FiHeart, FiSettings, FiMenu, FiBell, FiSearch, FiUser
 } from 'react-icons/fi';
 import ProfileDropdown from '../common/ProfileDropdown';
 
@@ -15,18 +15,76 @@ const Sidebar = ({
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(true);
     const [showTopSearchBar, setShowTopSearchBar] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
+
+    const notifications = [
+        {
+            id: 1,
+            type: 'new_release',
+            title: 'New Release: Kalvan',
+            message: 'Now available to watch!',
+            time: '5 min ago',
+            image: '/images/Kalvan.jpg',
+            unread: true
+        },
+        {
+            id: 2,
+            type: 'reminder',
+            title: 'Watch Reminder',
+            message: 'Continue watching "Family Star" - Episode 3',
+            time: '1 hour ago',
+            image: '/images/Family Star.jpg',
+            unread: true
+        },
+        {
+            id: 3,
+            type: 'new_release',
+            title: 'New Episodes Available',
+            message: 'Stranger Things Season 5 - 3 new episodes',
+            time: '2 hours ago',
+            image: '/images/Stranger Things.jpg',
+            unread: true
+        },
+        {
+            id: 4,
+            type: 'reminder',
+            title: 'Watch Reminder',
+            message: 'You added "Bhool Bhulaiyaa" to your watchlist',
+            time: '5 hours ago',
+            image: '/images/Bhool Bhulaiyaa.jpg',
+            unread: false
+        },
+        {
+            id: 5,
+            type: 'recommendation',
+            title: 'Recommended for You',
+            message: 'Based on your watch history: Premalu',
+            time: '1 day ago',
+            image: '/images/Premalu.jpg',
+            unread: false
+        },
+        {
+            id: 6,
+            type: 'new_release',
+            title: 'Coming Soon',
+            message: 'Bagheera - Releasing tomorrow!',
+            time: '1 day ago',
+            image: '/images/Bagheera.jpg',
+            unread: false
+        }
+    ];
+
+    const unreadCount = notifications.filter(n => n.unread).length;
 
     const pageToRoute = {
         'Home': '/',
         'TV Series': '/tv-series',
         'Movies': '/movies',
         'Animes': '/animes',
-        'Community': '/community',
-        'Discovery': '/discovery',
-        'Coming soon': '/coming-soon',
-        'Friends': '/friends',
-        'Parties': '/parties',
-        'Media': '/media',
+        'Trends': '/trends',
+        'Coming Soon': '/coming-soon',
+        'Rated Movies': '/rated-movies',
+        'Fan Favourite': '/fan-favourite',
         'Settings': '/settings',
         'Profile': '/profile',
     };
@@ -49,15 +107,10 @@ const Sidebar = ({
 
     const menuItems = [
         { name: 'Home', icon: FiHome },
-        { name: 'Community', icon: FiUsers },
-        { name: 'Discovery', icon: FiSearch },
-        { name: 'Coming soon', icon: FiClock },
-    ];
-
-    const socialItems = [
-        { name: 'Friends', icon: FiUser },
-        { name: 'Parties', icon: FiGift },
-        { name: 'Media', icon: FiMusic },
+        { name: 'Trends', icon: FiTrendingUp },
+        { name: 'Coming Soon', icon: FiClock },
+        { name: 'Rated Movies', icon: FiStar },
+        { name: 'Fan Favourite', icon: FiHeart },
     ];
 
     const generalItems = [
@@ -152,7 +205,87 @@ const Sidebar = ({
                             autoFocus
                         />
                     )}
-                    <FiBell className="hidden sm:block w-5 h-5 md:w-6 md:h-6 text-gray-400 hover:text-white cursor-pointer" />
+                    
+                    {/* Notification Bell */}
+                    <div className="relative hidden sm:block">
+                        <button 
+                            onClick={() => setShowNotifications(!showNotifications)}
+                            className="relative"
+                        >
+                            <FiBell className="w-5 h-5 md:w-6 md:h-6 text-gray-400 hover:text-white cursor-pointer transition" />
+                            {unreadCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-red-500 text-white text-xs font-bold rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center">
+                                    {unreadCount}
+                                </span>
+                            )}
+                        </button>
+
+                        {/* Notifications Dropdown */}
+                        {showNotifications && (
+                            <div className="absolute right-0 top-12 md:top-14 w-80 md:w-96 bg-gray-800 rounded-xl shadow-2xl border border-gray-700 max-h-[32rem] overflow-hidden z-50">
+                                {/* Header */}
+                                <div className="p-4 border-b border-gray-700 flex items-center justify-between sticky top-0 bg-gray-800">
+                                    <h3 className="text-lg font-bold text-white">Notifications</h3>
+                                    <button 
+                                        onClick={() => setShowNotifications(false)}
+                                        className="text-gray-400 hover:text-white transition"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                {/* Notifications List */}
+                                <div className="overflow-y-auto max-h-[28rem]">
+                                    {notifications.map((notification) => (
+                                        <div 
+                                            key={notification.id}
+                                            className={`p-4 border-b border-gray-700 hover:bg-gray-700/50 cursor-pointer transition ${
+                                                notification.unread ? 'bg-gray-700/30' : ''
+                                            }`}
+                                        >
+                                            <div className="flex gap-3">
+                                                {/* Notification Image */}
+                                                <div className="flex-shrink-0">
+                                                    <img 
+                                                        src={notification.image} 
+                                                        alt={notification.title}
+                                                        className="w-12 h-12 md:w-14 md:h-14 rounded-lg object-cover"
+                                                    />
+                                                </div>
+
+                                                {/* Notification Content */}
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <h4 className="text-sm font-semibold text-white truncate">
+                                                            {notification.title}
+                                                        </h4>
+                                                        {notification.unread && (
+                                                            <div className="w-2 h-2 bg-pink-500 rounded-full flex-shrink-0 mt-1"></div>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                                                        {notification.message}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 mt-1">
+                                                        {notification.time}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="p-3 border-t border-gray-700 bg-gray-800">
+                                    <button className="w-full text-center text-sm text-amber-600 hover:text-amber-500 font-semibold transition">
+                                        View All Notifications
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
                     <div className="relative">
                         {!isLoggedIn ? (
@@ -221,7 +354,6 @@ const Sidebar = ({
                     </div>
                 </div>
                 {renderNavSection('MENU', menuItems)}
-                {renderNavSection('SOCIAL', socialItems)}
                 {renderNavSection('GENERAL', generalItems)}
             </div>
         </>

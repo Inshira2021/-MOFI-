@@ -27,30 +27,40 @@ const dummyCast = [
   { id: 6, name: 'Finn Bennett', character: "Prince Aerion 'Brightflame'", episodes: '6 episodes', year: '2025', photo: '/scarlett johansson.jpg' },
 ];
 
-const MovieDetail = ({ allMovies }) => {
+const MovieDetail = ({ allContent, contentType = "Movie" }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [mainTrailer, setMainTrailer] = useState(dummyTrailers[0]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [userRating, setUserRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [reactions, setReactions] = useState({ likes: 582, dislikes: 23, hearts: 245, laughs: 89, wows: 156 });
   const [showRatingPopup, setShowRatingPopup] = useState(false);
   const [showRateButton, setShowRateButton] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // Find the movie by ID
-  const movie = allMovies?.find(m => m.id === parseInt(id));
+  // Find the content by ID
+  const movie = allContent?.find(m => m.id === parseInt(id));
+
+  // Create trailer object based on the actual movie data
+  const mainTrailer = movie ? {
+    id: movie.id,
+    title: `${movie.name} - Official Trailer`,
+    duration: '2:30',
+    thumbnail: movie.heroSrc || movie.src,
+    likes: Math.floor(movie.rating * 100),
+    loves: Math.floor(movie.rating * 50)
+  } : null;
 
   if (!movie) {
     return (
       <div className="flex-grow flex items-center justify-center text-white">
         <div className="text-center">
-          <h2 className="text-3xl font-bold mb-4">Movie Not Found</h2>
+          <h2 className="text-3xl font-bold mb-4">{contentType} Not Found</h2>
           <button 
-            onClick={() => navigate('/movies')}
+            onClick={() => navigate('/')}
             className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 px-6 py-2 rounded-full"
           >
-            Back to Movies
+            Back to Home
           </button>
         </div>
       </div>
@@ -69,20 +79,57 @@ const MovieDetail = ({ allMovies }) => {
     setShowRatingPopup(false);
   };
 
+  // Generate dynamic trailers for this specific content
+  const contentTrailers = movie ? [
+    { 
+      id: 1, 
+      title: `${movie.name} - Official Trailer`, 
+      duration: '2:30', 
+      thumbnail: movie.heroSrc || movie.src, 
+      likes: Math.floor(movie.rating * 100), 
+      loves: Math.floor(movie.rating * 50) 
+    },
+    { 
+      id: 2, 
+      title: `${movie.name} - Teaser`, 
+      duration: '1:45', 
+      thumbnail: movie.src, 
+      likes: Math.floor(movie.rating * 80), 
+      loves: Math.floor(movie.rating * 40) 
+    },
+    { 
+      id: 3, 
+      title: `${movie.name} - Behind the Scenes`, 
+      duration: '3:15', 
+      thumbnail: movie.heroSrc || movie.src, 
+      likes: Math.floor(movie.rating * 60), 
+      loves: Math.floor(movie.rating * 30) 
+    },
+  ] : [];
+
+  const contentPhotos = movie ? [
+    { id: 1, src: movie.src },
+    { id: 2, src: movie.heroSrc || movie.src },
+    { id: 3, src: movie.src },
+    { id: 4, src: movie.heroSrc || movie.src },
+    { id: 5, src: movie.src },
+    { id: 6, src: movie.heroSrc || movie.src },
+  ] : [];
+
   return (
     <div className="flex-grow overflow-y-auto bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-6">
-        {/* Movie Title & Genre */}
+        {/* Title & Genre */}
         <div className="mb-4">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2">{movie.name}</h1>
           <div className="flex items-center gap-3 text-gray-400">
-            <span>TV Series</span>
+            <span>{contentType}</span>
             <span>•</span>
-            <span>2025–</span>
+            <span>{movie.genre}</span>
             <span>•</span>
-            <span>TV-MA</span>
+            <span>2025</span>
             <span>•</span>
-            <span>1h</span>
+            <span>HD</span>
           </div>
         </div>
 
@@ -109,24 +156,50 @@ const MovieDetail = ({ allMovies }) => {
                   </button>
                 </>
               ) : (
-                // Show trailer video
+                // Show trailer - thumbnail first, then video when clicked
                 <>
-                  <img 
-                    src={mainTrailer.thumbnail} 
-                    alt={mainTrailer.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent" />
-                  
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <button className="group">
-                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center shadow-2xl shadow-amber-900/50 transform group-hover:scale-110 transition-all duration-300 ring-4 ring-white/20">
-                        <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-white ml-1" />
+                  {!isPlaying ? (
+                    // Thumbnail view with play button
+                    <>
+                      <img 
+                        src={mainTrailer.thumbnail} 
+                        alt={mainTrailer.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent" />
+                      
+                      {/* Play Button Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <button onClick={() => setIsPlaying(true)} className="group">
+                          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center shadow-2xl shadow-amber-900/50 transform group-hover:scale-110 transition-all duration-300 ring-4 ring-white/20">
+                            <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-white ml-1" />
+                          </div>
+                          <p className="text-white text-xs md:text-sm font-semibold mt-2">Play trailer {mainTrailer.duration}</p>
+                        </button>
                       </div>
-                      <p className="text-white text-xs md:text-sm font-semibold mt-2">Play trailer {mainTrailer.duration}</p>
-                    </button>
-                  </div>
+                    </>
+                  ) : (
+                    // Video player view
+                    <div className="w-full h-full bg-black">
+                      <video 
+                        className="w-full h-full object-contain"
+                        controls
+                        autoPlay
+                        poster={mainTrailer.thumbnail}
+                      >
+                        <source src={`/videos/${movie.name.replace(/\s+/g, '_')}.mp4`} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                      <button 
+                        onClick={() => setIsPlaying(false)}
+                        className="absolute top-4 right-4 bg-gray-900/80 hover:bg-gray-900 p-2 rounded-full transition z-10"
+                      >
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -215,7 +288,7 @@ const MovieDetail = ({ allMovies }) => {
                   <div className="w-12 h-12 mx-auto mb-2 bg-gray-700 rounded-lg flex items-center justify-center">
                     <FiPlay className="w-7 h-7 text-white" />
                   </div>
-                  <p className="text-white font-bold text-base">{dummyTrailers.length} VIDEOS</p>
+                  <p className="text-white font-bold text-base">{contentTrailers.length} VIDEOS</p>
                 </div>
               </div>
             </div>
@@ -229,7 +302,7 @@ const MovieDetail = ({ allMovies }) => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <p className="text-white font-bold text-base">{dummyPhotos.length} PHOTOS</p>
+                  <p className="text-white font-bold text-base">{contentPhotos.length} PHOTOS</p>
                 </div>
               </div>
             </div>
@@ -300,7 +373,7 @@ const MovieDetail = ({ allMovies }) => {
             <h2 className="text-2xl md:text-3xl font-bold flex items-center">
               <span className="w-1 h-8 bg-gradient-to-b from-amber-500 to-orange-600 mr-3 rounded-full"></span>
               Videos
-              <span className="ml-3 text-gray-500 text-xl">{dummyTrailers.length}</span>
+              <span className="ml-3 text-gray-500 text-xl">{contentTrailers.length}</span>
             </h2>
             <button className="text-amber-500 hover:text-amber-400 font-semibold flex items-center gap-2">
               View All
@@ -308,14 +381,14 @@ const MovieDetail = ({ allMovies }) => {
             </button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {dummyTrailers.map((trailer) => (
+            {contentTrailers.map((trailer, index) => (
               <div 
                 key={trailer.id}
                 onClick={() => {
-                  setMainTrailer(trailer);
+                  // Scroll to top to view the main trailer
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`group cursor-pointer ${mainTrailer.id === trailer.id ? 'ring-2 ring-amber-500' : ''}`}
+                className={`group cursor-pointer ${index === 0 ? 'ring-2 ring-amber-500' : ''}`}
               >
                 <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-800 mb-2">
                   <img 
@@ -352,7 +425,7 @@ const MovieDetail = ({ allMovies }) => {
             <h2 className="text-2xl md:text-3xl font-bold flex items-center">
               <span className="w-1 h-8 bg-gradient-to-b from-amber-500 to-orange-600 mr-3 rounded-full"></span>
               Photos
-              <span className="ml-3 text-gray-500 text-xl">{dummyPhotos.length}</span>
+              <span className="ml-3 text-gray-500 text-xl">{contentPhotos.length}</span>
             </h2>
             <button className="text-amber-500 hover:text-amber-400 font-semibold flex items-center gap-2">
               View All
@@ -360,7 +433,7 @@ const MovieDetail = ({ allMovies }) => {
             </button>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {dummyPhotos.map((photo) => (
+            {contentPhotos.map((photo) => (
               <div 
                 key={photo.id}
                 onClick={() => {
