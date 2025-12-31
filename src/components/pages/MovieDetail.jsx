@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiThumbsUp, FiThumbsDown, FiShare2, FiBookmark, FiPlay, FiStar } from 'react-icons/fi';
+import { FiThumbsUp, FiThumbsDown, FiShare2, FiBookmark, FiPlay, FiStar, FiHeart } from 'react-icons/fi';
 
 // Dummy data for trailers, photos, and cast
 const dummyTrailers = [
@@ -37,9 +37,48 @@ const MovieDetail = ({ allContent, contentType = "Movie" }) => {
   const [showRatingPopup, setShowRatingPopup] = useState(false);
   const [showRateButton, setShowRateButton] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   // Find the content by ID
   const movie = allContent?.find(m => m.id === parseInt(id));
+
+  // Check if this movie is in favorites
+  useEffect(() => {
+    if (movie) {
+      const storedFavorites = localStorage.getItem('userFavorites');
+      if (storedFavorites) {
+        const favorites = JSON.parse(storedFavorites);
+        setIsFavorite(favorites.some(fav => fav.id === movie.id && fav.type === contentType));
+      }
+    }
+  }, [movie, contentType]);
+
+  // Toggle favorite
+  const toggleFavorite = () => {
+    const storedFavorites = localStorage.getItem('userFavorites');
+    let favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
+    
+    const favoriteItem = {
+      id: movie.id,
+      title: movie.name,
+      image: movie.src,
+      type: contentType,
+      rating: movie.rating,
+      year: '2025',
+      genre: movie.genre
+    };
+
+    if (isFavorite) {
+      // Remove from favorites
+      favorites = favorites.filter(fav => !(fav.id === movie.id && fav.type === contentType));
+    } else {
+      // Add to favorites
+      favorites.push(favoriteItem);
+    }
+
+    localStorage.setItem('userFavorites', JSON.stringify(favorites));
+    setIsFavorite(!isFavorite);
+  };
 
   // Create trailer object based on the actual movie data
   const mainTrailer = movie ? {
@@ -131,6 +170,31 @@ const MovieDetail = ({ allContent, contentType = "Movie" }) => {
             <span>•</span>
             <span>HD</span>
           </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-3 mb-6 flex-wrap">
+          <button 
+            onClick={toggleFavorite}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition ${
+              isFavorite 
+                ? 'bg-red-600 hover:bg-red-700 text-white' 
+                : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+            }`}
+          >
+            <FiHeart className={`w-4 h-4 ${isFavorite ? 'fill-white' : ''}`} />
+            {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+          </button>
+          
+          <button className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg font-semibold transition">
+            <FiBookmark className="w-4 h-4" />
+            Watchlist
+          </button>
+          
+          <button className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg font-semibold transition">
+            <FiShare2 className="w-4 h-4" />
+            Share
+          </button>
         </div>
 
         {/* Hero Section - IMDB Style Layout */}

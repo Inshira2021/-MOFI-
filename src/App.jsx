@@ -8,6 +8,7 @@ import AuthModal from './components/common/AuthModal';
 import ProfileDropdown from './components/common/ProfileDropdown';
 import ProfilePage from './components/pages/ProfilePage';
 import SettingsPage from './components/pages/SettingsPage';
+import FavoritesPage from './components/pages/FavoritesPage';
 import MovieDetail from './components/pages/MovieDetail';
 import Footer from './components/layout/Footer';
 
@@ -23,6 +24,15 @@ function App() {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+    // Check if navigation state wants to open auth modal
+    useEffect(() => {
+        if (location.state?.openAuthModal) {
+            setIsAuthModalOpen(true);
+            // Clear the state
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location, navigate]);
+
     // Map routes to page names
     const routeToPageName = {
         '/': 'Home',
@@ -36,6 +46,7 @@ function App() {
         '/fan-favourite': 'Fan Favourite',
         '/settings': 'Settings',
         '/profile': 'Profile',
+        '/favorites': 'Favorites',
         '/login': 'Login',
     };
 
@@ -109,6 +120,7 @@ function App() {
                     <Route path="/fan-favourite" element={<OtherPageContent title="Fan Favourite" />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/favorites" element={<FavoritesPage />} />
                     <Route path="/login" element={
                         <AuthModal
                             onClose={() => navigate('/')}
