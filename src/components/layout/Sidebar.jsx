@@ -5,6 +5,7 @@ import {
     FiHeart, FiSettings, FiMenu, FiBell, FiSearch, FiUser
 } from 'react-icons/fi';
 import ProfileDropdown from '../common/ProfileDropdown';
+import { allMoviesData, allTVSeriesData, allAnimeData } from '../../data/moviesData';
 
 const Sidebar = ({
     currentPage, setCurrentPage, activeTab, setActiveTab, onToggleSidebar,
@@ -14,6 +15,8 @@ const Sidebar = ({
     const [isOpen, setIsOpen] = useState(true);
     const [showTopSearchBar, setShowTopSearchBar] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
 
     const notifications = [
         {
@@ -193,15 +196,86 @@ const Sidebar = ({
                 <div className="flex items-center space-x-3 md:space-x-6 relative">
                     <FiSearch
                         className="w-5 h-5 md:w-6 md:h-6 text-gray-400 hover:text-white cursor-pointer"
-                        onClick={() => setShowTopSearchBar(prev => !prev)}
+                        onClick={() => {
+                            setShowTopSearchBar(prev => !prev);
+                            if (!showTopSearchBar) {
+                                setSearchQuery('');
+                                setSearchResults([]);
+                            }
+                        }}
                     />
                     {showTopSearchBar && (
-                        <input
-                            type="text"
-                            placeholder="Search movies..."
-                            className="absolute right-0 top-12 md:top-14 bg-gray-700 text-white rounded-lg px-4 py-2 w-[70vw] max-w-[16rem] md:w-64 border border-gray-600 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm transition-all"
-                            autoFocus
-                        />
+                        <div className="absolute right-0 top-12 md:top-14 bg-gray-800 rounded-lg w-[70vw] max-w-[16rem] md:w-80 border border-gray-600 shadow-2xl z-50">
+                            <input
+                                type="text"
+                                placeholder="Search movies, TV series, anime..."
+                                value={searchQuery}
+                                onChange={(e) => {
+                                    const query = e.target.value;
+                                    setSearchQuery(query);
+                                    
+                                    if (query.trim()) {
+                                        const allContent = [...allMoviesData, ...allTVSeriesData, ...allAnimeData];
+                                        const filtered = allContent.filter(item => 
+                                            item.name.toLowerCase().includes(query.toLowerCase())
+                                        ).slice(0, 8);
+                                        setSearchResults(filtered);
+                                    } else {
+                                        setSearchResults([]);
+                                    }
+                                }}
+                                className="w-full bg-gray-700 text-white rounded-t-lg px-4 py-2 border-b border-gray-600 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm"
+                                autoFocus
+                            />
+                            {searchResults.length > 0 && (
+                                <div className="max-h-96 overflow-y-auto custom-scrollbar">
+                                    {searchResults.map((item) => {
+                                        const isMovie = allMoviesData.find(m => m.id === item.id);
+                                        const isTVSeries = allTVSeriesData.find(m => m.id === item.id);
+                                        const isAnime = allAnimeData.find(m => m.id === item.id);
+                                        
+                                        let route = '/';
+                                        if (isMovie) route = `/movie/${item.id}`;
+                                        else if (isTVSeries) route = `/tv-series/${item.id}`;
+                                        else if (isAnime) route = `/anime/${item.id}`;
+                                        
+                                        return (
+                                            <div
+                                                key={item.id}
+                                                onClick={() => {
+                                                    navigate(route);
+                                                    setShowTopSearchBar(false);
+                                                    setSearchQuery('');
+                                                    setSearchResults([]);
+                                                }}
+                                                className="flex items-center gap-3 p-3 hover:bg-gray-700 cursor-pointer transition border-b border-gray-700 last:border-b-0"
+                                            >
+                                                <img 
+                                                    src={item.src} 
+                                                    alt={item.name}
+                                                    className="w-12 h-16 object-cover rounded"
+                                                />
+                                                <div className="flex-1">
+                                                    <h4 className="text-white text-sm font-semibold line-clamp-1">{item.name}</h4>
+                                                    <p className="text-gray-400 text-xs">{item.genre}</p>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <span className="text-amber-500 text-xs">⭐ {item.rating}</span>
+                                                        <span className="text-gray-500 text-xs">
+                                                            {isMovie ? 'Movie' : isTVSeries ? 'TV Series' : 'Anime'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                            {searchQuery.trim() && searchResults.length === 0 && (
+                                <div className="p-4 text-center text-gray-400 text-sm">
+                                    No results found for "{searchQuery}"
+                                </div>
+                            )}
+                        </div>
                     )}
                     
                     {/* Notification Bell */}
