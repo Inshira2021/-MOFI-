@@ -1,5 +1,3 @@
-// components/common/AuthModal.jsx
-
 import React, { useState } from 'react';
 import { FiX, FiMail, FiLock, FiEye, FiEyeOff, FiUser } from 'react-icons/fi';
 import { GoogleLogin } from '@react-oauth/google';
@@ -7,70 +5,49 @@ import { GoogleLogin } from '@react-oauth/google';
 const AuthModal = ({ onClose, onLoginSuccess }) => {
     const [isSignIn, setIsSignIn] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    
-    // Minimal state for demonstration
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setPasswordError('');
         
         if (isSignIn) {
             if (email && password) {
-                console.log('Logging In...');
                 setTimeout(onLoginSuccess, 500);
             }
         } else {
-            if (username && email && password) {
+            // Validate password match for registration
+            if (password !== confirmPassword) {
+                setPasswordError('Passwords do not match');
+                return;
+            }
+
+            if (username && email && password && confirmPassword) {
                 setIsLoading(true);
                 try {
-                    const requestData = {
-                        username: username,
-                        email: email,
-                        password: password
-                    };
-                    
-                    console.log('Sending registration data:', requestData);
-                    
-                    // Send registration data to API
                     const response = await fetch('http://localhost:8000/api/register', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(requestData)
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, email, password })
                     });
 
-                    console.log('Response status:', response.status);
-                    
-                    // Try to parse JSON response to get error details
-                    let data;
-                    try {
-                        data = await response.json();
-                        console.log('Server response:', data);
-                    } catch (jsonError) {
-                        console.log('No JSON response from server');
-                        data = {};
-                    }
+                    const data = await response.json().catch(() => ({}));
 
                     if (response.ok) {
-                        console.log('Registration successful!');
-                        // After successful registration, automatically log in and redirect to dashboard
-                        setTimeout(() => {
-                            onLoginSuccess();
-                        }, 500);
+                        setTimeout(onLoginSuccess, 500);
                     } else {
                         setIsLoading(false);
-                        // Show detailed error for debugging
                         const errorMsg = data.detail || data.message || `Server error: ${response.status}`;
-                        console.error('Registration failed:', errorMsg, data);
                         alert(`Registration failed: ${JSON.stringify(errorMsg)}`);
                     }
                 } catch (error) {
                     setIsLoading(false);
-                    console.error('Registration error:', error);
                     alert('Registration failed: ' + error.message);
                 }
             } else {
@@ -80,14 +57,10 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
     };
 
     const handleGoogleSuccess = (credentialResponse) => {
-        console.log('Google Sign-In Success:', credentialResponse);
-        // Here you would send the credential to your backend
-        // For now, we'll just simulate successful login
         setTimeout(onLoginSuccess, 500);
     };
 
     const handleGoogleError = () => {
-        console.log('Google Sign-In Failed');
         alert('Google Sign-In failed. Please try again.');
     };
 
@@ -182,6 +155,40 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
                             </button>
                         </div>
                     </div>
+
+                    {/* Confirm Password Input - Only show for registration */}
+                    {!isSignIn && (
+                        <div>
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-amber-100 mb-2">
+                                Confirm Password
+                            </label>
+                            <div className="relative">
+                                <FiLock className="absolute left-0 top-1/2 transform -translate-y-1/2 text-amber-300/60 w-4 h-4 md:w-5 md:h-5" />
+                                <input
+                                    id="confirmPassword"
+                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    placeholder="••••••••"
+                                    value={confirmPassword}
+                                    onChange={(e) => {
+                                        setConfirmPassword(e.target.value);
+                                        setPasswordError('');
+                                    }}
+                                    required
+                                    className={`w-full bg-transparent border-b ${passwordError ? 'border-red-500' : 'border-amber-700/50'} text-white py-3 pl-7 pr-10 focus:outline-none focus:border-amber-500 transition-all text-sm md:text-base placeholder:text-amber-300/40`}
+                                />
+                                <button 
+                                    type="button" 
+                                    onClick={() => setShowConfirmPassword(prev => !prev)} 
+                                    className="absolute right-0 top-1/2 transform -translate-y-1/2 text-amber-300/60 hover:text-white transition"
+                                >
+                                    {showConfirmPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                                </button>
+                            </div>
+                            {passwordError && (
+                                <p className="text-red-400 text-xs mt-1 ml-1">{passwordError}</p>
+                            )}
+                        </div>
+                    )}
 
                     <button
                         type="submit"

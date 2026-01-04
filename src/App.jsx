@@ -1,11 +1,8 @@
-// App.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Dashboard, { OtherPageContent, allMoviesData, allTVSeriesData, allAnimeData } from './components/pages/Dashboard';
 import Sidebar from './components/layout/Sidebar';
 import AuthModal from './components/common/AuthModal';
-import ProfileDropdown from './components/common/ProfileDropdown';
 import ProfilePage from './components/pages/ProfilePage';
 import SettingsPage from './components/pages/SettingsPage';
 import FavoritesPage from './components/pages/FavoritesPage';

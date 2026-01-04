@@ -1,5 +1,3 @@
-// components/common/ProfileDropdown.jsx
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiUser, FiHeart, FiSettings, FiLogOut } from 'react-icons/fi';
@@ -13,7 +11,6 @@ const ProfileDropdown = ({ handleLogout, setCurrentPage, onClose }) => {
         'Settings': '/settings',
     };
     
-    // Define the menu items
     const dropdownItems = [
         { icon: FiUser, label: 'My Profile', page: 'Profile' },
         { icon: FiHeart, label: 'Favorites', page: 'Favorites' },
@@ -21,15 +18,12 @@ const ProfileDropdown = ({ handleLogout, setCurrentPage, onClose }) => {
         { icon: FiLogOut, label: 'Log Out', action: handleLogout, isDestructive: true },
     ];
 
-    // Handles navigation or actions (like logout)
     const handleClick = (item) => {
         if (item.action) {
             item.action();
         } else if (item.page) {
             const route = pageToRoute[item.page];
-            if (route) {
-                navigate(route);
-            }
+            if (route) navigate(route);
         }
         onClose();
     };
@@ -37,7 +31,6 @@ const ProfileDropdown = ({ handleLogout, setCurrentPage, onClose }) => {
     return (
         <div 
             className="absolute right-0 mt-2 md:mt-3 w-44 md:w-48 bg-gray-700 rounded-lg shadow-xl py-1 z-30 ring-1 ring-white/10"
-            // Simple click-away mechanism (you might want to use a useEffect hook for a better one)
             onMouseLeave={onClose} 
         >
             {dropdownItems.map((item, index) => (

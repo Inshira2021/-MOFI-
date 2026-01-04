@@ -1,5 +1,3 @@
-// components/pages/SettingsPage.jsx
-
 import React, { useState } from 'react';
 import { 
     FiMail, 

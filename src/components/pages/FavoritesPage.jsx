@@ -1,5 +1,3 @@
-// components/pages/FavoritesPage.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiHeart, FiStar, FiCalendar, FiClock } from 'react-icons/fi';
@@ -9,7 +7,6 @@ const FavoritesPage = () => {
     const [favorites, setFavorites] = useState([]);
     const [activeFilter, setActiveFilter] = useState('All');
 
-    // Load favorites from localStorage
     useEffect(() => {
         const storedFavorites = localStorage.getItem('userFavorites');
         if (storedFavorites) {
@@ -17,7 +14,6 @@ const FavoritesPage = () => {
         }
     }, []);
 
-    // Filter favorites by type
     const filteredFavorites = activeFilter === 'All' 
         ? favorites 
         : favorites.filter(item => item.type === activeFilter);

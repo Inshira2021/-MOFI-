@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiThumbsUp, FiThumbsDown, FiShare2, FiBookmark, FiPlay, FiStar, FiHeart } from 'react-icons/fi';
 
-// Dummy data for trailers, photos, and cast
 const dummyTrailers = [
   { id: 1, title: 'Official Final Trailer', duration: '2:20', thumbnail: '/John Wick.jpg', likes: 583, loves: 245 },
   { id: 2, title: 'Official Teaser', duration: '2:23', thumbnail: '/Mad Max.jpg', likes: 1200, loves: 426 },
